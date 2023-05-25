@@ -17,6 +17,8 @@ public sealed class ArgsHandler
     public string? OutputFile { get; internal set; }
     /// <summary>Directory to render to</summary>
     public string? OutputDir { get; internal set; }
+    /// <summary>Material file override</summary>
+    public string? MaterialFile { get; internal set; }
     /// <summary>Sets the output log level</summary>
     public LogLevelEnum LogLevel { get; set; } = LogLevelEnum.Critical;
     /// <summary>Allows naming conflicts for mtl file</summary>
@@ -114,6 +116,14 @@ public sealed class ArgsHandler
                         return 1;
                     }
                     OutputDir = new DirectoryInfo(inputArgs[i]).FullName;
+                    break;
+                case "-mtl":
+                    if (++i > inputArgs.Length)
+                    {
+                        PrintUsage();
+                        return 1;
+                    }
+                    MaterialFile = inputArgs[i];
                     break;
                 #endregion
                 #region case "-loglevel"...
@@ -302,6 +312,9 @@ public sealed class ArgsHandler
         else if (TgaTextures)
             Utils.Log(LogLevelEnum.Info, "Using TGA textures");
         
+        if (MaterialFile != null)
+            Utils.Log(LogLevelEnum.Info, $"Using material file: {MaterialFile}");
+
         if (OutputBlender)
             Utils.Log(LogLevelEnum.Info, "Output format set to Blender (.blend)");
         if (OutputCryTek)

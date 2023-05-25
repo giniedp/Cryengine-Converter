@@ -29,6 +29,7 @@ public partial class CryEngine
     public SkinningInfo SkinningInfo { get; set; }
     public string InputFile { get; internal set; }
     public string DataDir { get; internal set; }
+    public string MaterialFile{ get; set; }
 
     public List<Chunk> Chunks
     {
@@ -291,6 +292,24 @@ public partial class CryEngine
         }
         else
         {
+            if (MaterialFile != null)
+            {
+                // Check if absolute material path is given
+                materialFile = new FileInfo(MaterialFile);
+                if (materialFile.Exists)
+                    return materialFile;
+
+                // Check if material is relative to current input directory
+                materialFile = new FileInfo(Path.Combine(inputFileInfo.Directory.FullName, MaterialFile));
+                if (materialFile.Exists)
+                    return materialFile;
+
+                // Check if material is relative to given object directory
+                materialFile = new FileInfo(Path.Combine(DataDir, MaterialFile));
+                if (materialFile.Exists)
+                    return materialFile;
+            }
+
             // Check if material file is in or relative to current directory
             materialFile = new FileInfo(Path.Combine(inputFileInfo.Directory.FullName, name));
             if (materialFile.Exists)
@@ -305,4 +324,5 @@ public partial class CryEngine
         Utils.Log(LogLevelEnum.Info, $"Unable to find material file for {name}");
         return null;
     }
+
 }

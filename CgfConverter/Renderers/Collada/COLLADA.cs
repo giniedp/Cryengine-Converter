@@ -765,15 +765,18 @@ public class Collada : BaseRenderer
         if (DaeObject.Library_Materials.Material is null)
             DaeObject.Library_Materials.Material = Array.Empty<Grendgine_Collada_Material>();
 
-        foreach (var mat in nodeChunk.Materials.SubMaterials)
+        if (nodeChunk.Materials?.SubMaterials is not null)
         {
-            // Check to see if the collada object already has a material with this name.  If not, add.
-
-            var matNames = DaeObject.Library_Materials.Material.Select(c => c.Name);
-            if (!matNames.Contains(mat.Name))
+            foreach (var mat in nodeChunk.Materials.SubMaterials)
             {
-                colladaMaterials.Add(AddMaterialToMaterialLibrary(mat));
-                colladaEffects.Add(CreateColladaEffect(mat));
+                // Check to see if the collada object already has a material with this name.  If not, add.
+
+                var matNames = DaeObject.Library_Materials.Material.Select(c => c.Name);
+                if (!matNames.Contains(mat.Name))
+                {
+                    colladaMaterials.Add(AddMaterialToMaterialLibrary(mat));
+                    colladaEffects.Add(CreateColladaEffect(mat));
+                }
             }
         }
 

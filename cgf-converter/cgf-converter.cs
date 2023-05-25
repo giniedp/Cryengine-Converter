@@ -31,6 +31,7 @@ public class Program
                     {
                         // Read CryEngine Files
                         var cryData = new CryEngine(inputFile, argsHandler.DataDir.FullName);
+                        cryData.MaterialFile = argsHandler.MaterialFile;
 
                         cryData.ProcessCryengineFiles();
 
