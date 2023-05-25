@@ -15,6 +15,13 @@ public static class CryXmlSerializer
     {
         using var br = new BinaryReader(inStream);
         var peek = (char)br.PeekChar();
+        
+        if ((int)peek == 0xFEFF)
+        {
+            // Strip Byte Order Mark
+            br.ReadChar();
+            peek = (char)br.PeekChar();
+        }
 
         if (peek == '<')    // XML
         {
