@@ -115,7 +115,7 @@ public class Program
     {
         // Read CryEngine Files
         var data = new CryEngine(inputFile, _args.PackFileSystem);
-
+        data.MaterialFile = _args.MaterialFile;
         data.ProcessCryengineFiles();
 
         var renderers = new List<IRenderer>();

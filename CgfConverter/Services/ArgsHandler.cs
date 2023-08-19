@@ -24,6 +24,8 @@ public sealed class ArgsHandler
     public string? OutputFile { get; internal set; }
     /// <summary>Directory to render to</summary>
     public string? OutputDir { get; internal set; }
+    /// <summary>Material file override</summary>
+    public string? MaterialFile { get; internal set; }
     /// <summary>Whether to preserve path, if OutputDir is set.</summary>
     public bool PreservePath { get; internal set; }
     /// <summary>Maximum number of threads to use.</summary>
@@ -145,6 +147,16 @@ public sealed class ArgsHandler
                 case "-splitlayer":
                 case "-splitlayers":
                     SplitLayers = true;
+                    break;
+                #endregion
+                #region case "-mtl"
+                case "-mtl":
+                    if (++i > inputArgs.Length)
+                    {
+                        PrintUsage();
+                        return 1;
+                    }
+                    MaterialFile = inputArgs[i];
                     break;
                 #endregion
                 #region case "-loglevel"...
@@ -340,6 +352,8 @@ public sealed class ArgsHandler
             Utilities.Log(LogLevelEnum.Info, "Using TIF textures");
         else if (TgaTextures)
             Utilities.Log(LogLevelEnum.Info, "Using TGA textures");
+        if (MaterialFile != null)
+            Utilities.Log(LogLevelEnum.Info, $"Using material file: {MaterialFile}");
         if (OutputWavefront)
             Utilities.Log(LogLevelEnum.Info, "Output format set to Wavefront (.obj)");
         if (OutputCollada)

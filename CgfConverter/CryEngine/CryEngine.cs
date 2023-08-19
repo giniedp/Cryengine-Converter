@@ -36,6 +36,7 @@ public partial class CryEngine
     public SkinningInfo SkinningInfo { get; set; }
     public string InputFile { get; internal set; }
     public IPackFileSystem PackFileSystem { get; internal set; }
+    public string MaterialFile { get; set; }
 
     public List<Chunk> Chunks
     {
@@ -327,6 +328,23 @@ public partial class CryEngine
         }
         else
         {
+            if (MaterialFile != null)
+            {
+                // Check if absolute material path is given
+                var materialFile = new FileInfo(MaterialFile);
+                if (materialFile.Exists)
+                    return materialFile.FullName;
+
+                // Check if material file is in or relative to current directory
+                var mtlName = FileHandlingExtensions.CombineAndNormalizePath(Path.GetDirectoryName(InputFile), MaterialFile);
+                if (PackFileSystem.Exists(mtlName))
+                    return mtlName;
+
+                // Check if material file relative to object directory
+                if (PackFileSystem.Exists(MaterialFile))
+                    return MaterialFile;
+            }
+
             // Check if material file is in or relative to current directory
             var fullName = FileHandlingExtensions.CombineAndNormalizePath(Path.GetDirectoryName(InputFile), name);
             if (PackFileSystem.Exists(fullName))
